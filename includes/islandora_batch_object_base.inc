@@ -40,7 +40,8 @@ abstract class IslandoraBatchObject extends IslandoraNewFedoraObject {
    *     state or containing more information.
    */
   abstract public function batchProcess();
-
+  
+ 
   /**
    * Get the resources to which we should link in the database.
    *
@@ -71,6 +72,31 @@ abstract class IslandoraBatchObject extends IslandoraNewFedoraObject {
    */
   abstract public function addRelationships();
 
+  
+  /**
+   * The actual back-end action that is run after the batchProcess.
+   *
+   * By default Classes not overriding this will get objects pushed to the back-end.
+   * (ingested)
+   *
+   * @return AbstractObject
+   */
+  public function batchRepositoryAction() {
+    return islandora_add_object($this);
+    // need to define a wording for this like "ingest", "update, etc" This needs to return
+    // an Array full of little funny data
+  }
+  /**
+   * A human readable short description of the repository action.
+   *  Recomended is a verb in past tense.
+   *  
+   * @return string
+   
+   */
+  public getRepositoryActionDescription() {
+    return "ingested";
+  }
+  
   /**
    * Get the ID of this object in the queue.
    *
