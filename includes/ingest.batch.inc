@@ -397,11 +397,11 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
   ) {
     $start = timer_read(ISLANDORA_BATCH_TIMER_NAME);
     // Process a single object.
-    $ingest_object = unserialize($object['data']);
+    $islandora_batch_object = unserialize($object['data']);
 
     if ($object['state'] !== ISLANDORA_BATCH_STATE__DONE) {
       // Both a simple state and state with message return are accepted.
-      $process_results = $ingest_object->batchProcess();
+      $process_results = $islandora_batch_object->batchProcess();
       $object['state'] = is_array($process_results) ? $process_results['state'] : $process_results;
     }
 
@@ -410,32 +410,47 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
         // XXX: Due to how the things currently work, the user name and
         // password hash gets serialized, so later changes to the password
         // can break things... Let's set the password again.
-        $username = $ingest_object->repository->api->connection->username;
+        $username = $islandora_batch_object->repository->api->connection->username;
         $user = user_load_by_name($username);
-        if ($ingest_object->repository->api->connection->password != $user->pass) {
-          $ingest_object->repository->api->connection->password = $user->pass;
+        if ($islandora_batch_object->repository->api->connection->password != $user->pass) {
+          $islandora_batch_object->repository->api->connection->password = $user->pass;
         }
 
         // Push to backend.
-        $ingested_object = islandora_add_object($ingest_object);
-        if ($ingested_object) {
-          $object['data'] = serialize($ingested_object);
-          $context['message'] = t('Ingested %pid.', array('%pid' => $ingested_object->id));
+        $actionresult_object = $islandora_batch_object->batchRepositoryAction();
+       
+        if ($actionresult_object) {
+          $object['data'] = serialize($actionresult_object);
+          $context['message'] = t('Successfully %action %pid.', 
+            array(
+              '%pid' => $actionresult_object->id,
+              '%action' => $islandora_batch_object->getRepositoryActionDescription
+            ));
         }
         else {
-          // Failed to ingest...  Flag an error.
+          // Failed to process on backend...  Flag an error.
           $object['state'] = ISLANDORA_BATCH_STATE__ERROR;
-          $context['message'] = t('Unknown error: Failed to ingest %pid.', array('%pid' => $ingest_object->id));
+          $context['message'] = t('Unknown error: Failed to %action %pid.', 
+            array(
+              '%pid' => $islandora_batch_object->id,
+              '%action' => $islandora_batch_object->getRepositoryActionDescription
+            ));
         }
       }
       catch (Exception $e) {
-        // Failed to ingest...  Flag an error.
+        // Backend exception happened...  Flag an error.
         $object['state'] = ISLANDORA_BATCH_STATE__ERROR;
-        $context['message'] = t('Exception occured: Failed to ingest %pid.', array('%pid' => $ingest_object->id));
+        $context['message'] = t('Exception occured: Failed to %action %pid because of %message.',
+        array(
+          '%pid' => $islandora_batch_object->id,
+          '%action' => $islandora_batch_object->getRepositoryActionDescription,
+          '%message' => $e->getMessage()
+        ));
+        
       }
     }
     else {
-      $context['message'] = t('%pid not ready for ingest.', array('%pid' => $ingest_object->id));
+      $context['message'] = t('%pid not ready for ingest.', array('%pid' => $islandora_batch_object->id));
     }
 
     // Update the info in the database.
@@ -451,7 +466,7 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
     );
 
     // Pass hook object and a pass/fail state for the object.
-    module_invoke_all(ISLANDORA_BATCH_OBJECT_PROCESSED_HOOK, $ingest_object, ($object['state'] === ISLANDORA_BATCH_STATE__DONE ? 1 : 0));
+    module_invoke_all(ISLANDORA_BATCH_OBJECT_PROCESSED_HOOK, $islandora_batch_object, ($object['state'] === ISLANDORA_BATCH_STATE__DONE ? 1 : 0));
 
     $end = timer_read(ISLANDORA_BATCH_TIMER_NAME);
     if (!isset($context['results']['count'])) {
