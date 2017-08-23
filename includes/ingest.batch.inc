@@ -429,7 +429,7 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
           $context['message'] = t('Successfully %action %pid.', 
             array(
               '%pid' => $actionresult_object->id,
-              '%action' => $islandora_batch_object->getRepositoryActionDescription
+              '%action' => $islandora_batch_object->getRepositoryActionDescription()
             ));
 >>>>>>> First steps on abstract the repository action
         }
@@ -439,7 +439,7 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
           $context['message'] = t('Unknown error: Failed to %action %pid.', 
             array(
               '%pid' => $islandora_batch_object->id,
-              '%action' => $islandora_batch_object->getRepositoryActionDescription
+              '%action' => $islandora_batch_object->getRepositoryActionDescription()
             ));
         }
       }
@@ -449,7 +449,7 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
         $context['message'] = t('Exception occured: Failed to %action %pid because of %message.',
         array(
           '%pid' => $islandora_batch_object->id,
-          '%action' => $islandora_batch_object->getRepositoryActionDescription,
+          '%action' => $islandora_batch_object->getRepositoryActionDescription(),
           '%message' => $e->getMessage()
         ));
         
