@@ -93,7 +93,7 @@ abstract class IslandoraBatchObject extends IslandoraNewFedoraObject {
    * @return string
    
    */
-  public getRepositoryActionDescription() {
+  public function getRepositoryActionDescription() {
     return "ingested";
   }
   
