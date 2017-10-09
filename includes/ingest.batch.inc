@@ -425,7 +425,6 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
         $actionresult_object = $islandora_batch_object->batchRepositoryAction();
        
         if ($actionresult_object) {
-          $object['data'] = serialize($actionresult_object);
           $context['message'] = t('Successfully %action %pid.', 
             array(
               '%pid' => $actionresult_object->id,
