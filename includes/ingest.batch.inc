@@ -451,7 +451,6 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
           '%action' => $islandora_batch_object->getRepositoryActionDescription(),
           '%message' => $e->getMessage()
         ));
-        
       }
     }
     else {
