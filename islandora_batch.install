@@ -45,7 +45,7 @@ function islandora_batch_schema() {
         'not null' => FALSE,
       ),
     ),
-    'primary key' => array('id'),
+    'primary key' => array('id', 'sid'),
     'indexes' => array(
       'parent_index' => array('parent'),
       'sid' => array('sid'),
