@@ -19,7 +19,7 @@ define('ISLANDORA_BATCH_EMPTY_SET', 2);
  * Function to get the average.
  *
  * @param array $context
- *   The context
+ *   The context.
  */
 function islandora_batch_get_average($context) {
   if ($context['results']['count'] > 0) {
@@ -39,7 +39,7 @@ function islandora_batch_ingest_preprocess($preprocessor, &$context) {
 /**
  * Get the name of the lock to acquire/release.
  *
- * @param string|int|NULL $ingest_set
+ * @param string|int|null $ingest_set
  *   A string or integer identifying an ingest set to process. NULL indicates
  *   that it is a general/set-independent batch, processing everything in the
  *   queue.
@@ -91,7 +91,7 @@ function islandora_batch_get_lock_timeout($timeout) {
  * The general/set-independent batch should not be able to run at the same time
  * as any other batch.
  *
- * @param string|int|NULL $ingest_set
+ * @param string|int|null $ingest_set
  *   A string or integer identifying an ingest set to process. NULL indicates
  *   that it is a general/set-independent batch, processing everything in the
  *   queue.
@@ -373,7 +373,6 @@ function test_islandora_batch_process_results($results, $timeout, $lock_timeout,
   return TRUE;
 }
 
-
 /**
  * Process set of result from the islandora_batch_queue table.
  *
@@ -420,19 +419,19 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
         $actionresult_object = $islandora_batch_object->batchRepositoryAction();
 
         if ($actionresult_object) {
-          $context['message'] = t('Successfully %action %pid.', 
+          $context['message'] = t('Successfully %action %pid.',
             array(
               '%pid' => $actionresult_object->id,
-              '%action' => $islandora_batch_object->getRepositoryActionDescription()
+              '%action' => $islandora_batch_object->getRepositoryActionDescription(),
             ));
         }
         else {
           // Failed to process on backend...  Flag an error.
           $object['state'] = ISLANDORA_BATCH_STATE__ERROR;
-          $context['message'] = t('Unknown error: Failed to %action %pid.', 
+          $context['message'] = t('Unknown error: Failed to %action %pid.',
             array(
               '%pid' => $islandora_batch_object->id,
-              '%action' => $islandora_batch_object->getRepositoryActionDescription()
+              '%action' => $islandora_batch_object->getRepositoryActionDescription(),
             ));
         }
       }
@@ -443,7 +442,7 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
         array(
           '%pid' => $islandora_batch_object->id,
           '%action' => $islandora_batch_object->getRepositoryActionDescription(),
-          '%message' => $e->getMessage()
+          '%message' => $e->getMessage(),
         ));
       }
     }
