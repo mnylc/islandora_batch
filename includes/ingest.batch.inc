@@ -416,7 +416,7 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
           $islandora_batch_object->repository->api->connection->password = $user->pass;
         }
 
-		// Push to backend.
+        // Push to backend.
         $actionresult_object = $islandora_batch_object->batchRepositoryAction();
 
         if ($actionresult_object) {
