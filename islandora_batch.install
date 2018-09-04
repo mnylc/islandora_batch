@@ -359,7 +359,6 @@ function islandora_batch_update_7104() {
   ));
 }
 
-
 /**
  * Make PID and Set ID combined primary Key.
  */
