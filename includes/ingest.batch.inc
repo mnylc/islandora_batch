@@ -428,7 +428,7 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
         else {
           // Failed to process on backend...  Flag an error.
           $object['state'] = ISLANDORA_BATCH_STATE__ERROR;
-          $context['message'] = t('Unknown error: Failed to %action %pid.',
+          $context['message'] = t('Unknown error: %pid cannot be %action.',
             array(
               '%pid' => $islandora_batch_object->id,
               '%action' => $islandora_batch_object->getRepositoryActionDescription(),
@@ -438,7 +438,7 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
       catch (Exception $e) {
         // Backend exception happened...  Flag an error.
         $object['state'] = ISLANDORA_BATCH_STATE__ERROR;
-        $context['message'] = t('Exception occured: Failed to %action %pid because of %message.',
+        $context['message'] = t('Exception occured: %pid cannot be %action because of %message.',
         array(
           '%pid' => $islandora_batch_object->id,
           '%action' => $islandora_batch_object->getRepositoryActionDescription(),
@@ -447,7 +447,11 @@ function islandora_batch_process_results($results, $timeout, $lock_timeout, &$co
       }
     }
     else {
-      $context['message'] = t('%pid not ready for ingest.', array('%pid' => $islandora_batch_object->id));
+      $context['message'] = t('%pid cannot be %action: object not ready.',
+      array(
+        '%pid' => $islandora_batch_object->id,
+        '%action' => $islandora_batch_object->getRepositoryActionDescription(),
+      ));
     }
 
     // Update the info in the database.
