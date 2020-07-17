@@ -85,6 +85,10 @@ function islandora_batch_drush_command() {
         'encoding being used by PHP.',
         'value' => 'optional',
       ),
+      'output_set_id' => array(
+        'description' => 'A flag to indicate whether to print the set ID of the preprocessed objects.',
+        'value' => 'optional',
+      ),
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_LOGIN,
   );
@@ -106,14 +110,14 @@ function islandora_batch_drush_command() {
   }
   $items['islandora_batch_cleanup_processed_sets'] = array(
     'aliases' => array('ibcps'),
-    'description' => dt('Cleans up processed sets that have existed greater than a specified time.'),
+    'description' => dt('Cleans up completed sets older than a specified timestamp.'),
     'drupal dependencies' => array('islandora_batch'),
     'examples' => array(
       'drush -v -u1 islandora_batch_cleanup_processed_sets --time=1438179447',
     ),
     'options' => array(
       'time' => array(
-        'description' => dt('The amount of time since completion to compare against. The timestamp to be used to query against. Can use date +%s on the command line to get the current time.'),
+        'description' => dt('A UNIX timestamp. Batch sets that were marked complete at or before this timestamp will be deleted. You can use date +%s on the command line to get the current timestamp.'),
         'required' => TRUE,
       ),
     ),
@@ -188,7 +192,15 @@ function drush_islandora_batch_scan_preprocess() {
 
   // Pass the preprocessor off to run.
   $preprocessed = islandora_batch_handle_preprocessor($preprocessor);
-  drush_log(t("SetId: @s", array('@s' => $preprocessor->getSetId())), "ok");
+
+  if (drush_get_option('output_set_id', FALSE)) {
+    // If you choose the --output_set_id we only print the ID.
+    drush_print($preprocessor->getSetId());
+  }
+  else {
+    // This is the default for backwards compatibility sake.
+    drush_log(t("SetId: @s", array('@s' => $preprocessor->getSetId())), "ok");
+  }
 }
 
 /**

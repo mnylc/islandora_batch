@@ -233,7 +233,7 @@ class IslandoraScanBatchObject extends IslandoraBatchObject {
   public function __construct(IslandoraTuque $connection, $base_name, $object_info, $preprocessor_parameters) {
     parent::__construct(NULL, $connection->repository);
 
-    $this->modsToDcTransform = drupal_get_path('module', 'islandora_batch') . '/transforms/mods_to_dc.xsl';
+    $this->modsToDcTransform = drupal_get_path('module', 'islandora') . '/xml/transforms/mods_to_dc.xsl';
     $this->baseName = $base_name;
     $this->objectInfo = $object_info;
     $this->resources = array();
@@ -405,7 +405,7 @@ class IslandoraScanBatchObject extends IslandoraBatchObject {
           elseif (in_array($s_xml->getName(), array('collection', 'record'))) {
             $mods_datastream->content = static::runXslTransform(array(
               'input' => $xml,
-              'xsl' => $dir . '/transforms/MARC21slim2MODS3-4.xsl',
+              'xsl' => $dir . '/transforms/MARC21slim2MODS3-6.xsl',
             ));
           }
           // DC, transform to MODS and set.

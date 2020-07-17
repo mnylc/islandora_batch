@@ -360,9 +360,18 @@ function islandora_batch_update_7104() {
 }
 
 /**
- * Make PID and Set ID combined primary Key.
+ * Deprecates mods_to_dc.xsl
  */
 function islandora_batch_update_7105() {
+  return t('The mods_to_dc.xsl transform file has been moved to the Islandora module as of Islandora 7.x-1.13. 
+  No action is required for most sites, but any custom modules referring to this file should be pointed to its new location in the Islandora module. 
+  This copy of mods_to_dc.xsl will be removed in the next release.');
+}
+
+/**
+ * Make PID and Set ID combined primary Keys.
+ */
+function islandora_batch_update_7106() {
   db_drop_primary_key('islandora_batch_queue');
   db_add_primary_key('islandora_batch_queue', array('id', 'sid'));
 }
